@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Start/stop mango hypervisor interface
+#
+# Copyright (c) 2015 ilbers GmbH
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2
+# as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
+case "$1" in
+start)  echo "Starting Mango hypervisor interface"
+
+	# Load Mango API modules
+	modprobe mango_core
+	modprobe mango_data_channel nr_devs=1
+	modprobe mango_watchdog
+	modprobe mango_net_iface
+
+	# Run watchdog daemon
+	/usr/local/mango/bin/wd_daemon
+
+	# Bring up networking
+	ifconfig mango0 192.167.20.1 up
+	;;
+stop)
+
+	# Remove Mango moules
+	if [ -n "`lsmod | grep mango_net_iface`" ]; then
+		ifconfig mango0 down;
+		rmmod mango_net_iface;
+	fi
+	if [ -n "`lsmod | grep mango_watchdog`" ]; then
+		rmmod mango_watchdog;
+	fi
+	if [ -n "`lsmod | grep mango_data_channel`" ]; then
+		rmmod mango_data_channel;
+	fi
+	if [ -n "`lsmod | grep mango_core`" ]; then
+		rmmod mango_core;
+	fi
+esac
+
+exit 0
