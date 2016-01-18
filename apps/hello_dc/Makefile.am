@@ -1,4 +1,4 @@
-# Copyright (c) 2015 ilbers GmbH
+# Copyright (c) 2015-2016 ilbers GmbH
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2
@@ -13,5 +13,5 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-AUTOMAKE_OPTIONS = foreign
-SUBDIRS = watchdog tcp_client hello_dc
+bin_PROGRAMS = hello_dc
+hello_dc_SOURCES = hello_dc.c
